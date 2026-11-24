@@ -11,8 +11,14 @@ app = FastAPI(title="API de Mascotas")
 
 #colsultar todas las mascotas
 @app.get("/mascotas", response_model=list[MascotaSchema])
-def get_mascotas(db: Session = Depends(get_db)):
-    mascotas = db.query(MascotaModel).all()
+def get_mascotas(
+    especie: str | None = None,
+    db: Session = Depends(get_db)
+):
+    mascotas = db.query(MascotaModel)
+    if especie is not None:
+        mascotas = mascotas.filter(MascotaModel.especie.ilike(especie))
+    mascotas = mascotas.all()
     return mascotas
 
 #colsultar una mascota por id
@@ -36,6 +42,7 @@ def create_mascota(
     ):
     db_mascota = MascotaModel(
         nombre=mascota.nombre,
+        especie=mascota.especie,
         raza=mascota.raza,
         edad=mascota.edad,
         peso=mascota.peso

@@ -3,6 +3,7 @@ from pydantic import BaseModel,ConfigDict, EmailStr, Field
 #crear mascota
 class MascotaCreate(BaseModel):
     nombre: str=Field(min_length=1, max_length=50)
+    especie: str=Field(min_length=1, max_length=50)
     raza: str=Field(min_length=1, max_length=50)
     edad: int=Field(ge=0)
     peso: int=Field(ge=0)
@@ -11,6 +12,7 @@ class MascotaCreate(BaseModel):
 class Mascota(MascotaCreate):
     id: int
     nombre: str
+    especie: str
     raza: str
     edad: int
     peso: int

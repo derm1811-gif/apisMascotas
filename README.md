@@ -45,7 +45,7 @@ La documentación interactiva estará en <http://127.0.0.1:8000/docs>.
 | Método | Ruta | Función |
 |---|---|---|
 | `POST` | `/mascotas` | Registrar una mascota. |
-| `GET` | `/mascotas` | Consultar todas las mascotas. |
+| `GET` | `/mascotas` | Consultar todas las mascotas si no se envía un filtro. |
 | `GET` | `/mascotas?especie=Perro` | Filtrar mascotas por especie. |
 | `GET` | `/mascotas/{mascota_id}` | Consultar una mascota por ID. |
 | `PUT` | `/mascotas/{mascota_id}` | Actualizar una mascota. |
@@ -73,4 +73,10 @@ Las validaciones exigen nombre, especie y raza de 1 a 50 caracteres, y edad y pe
 - `database.py`: conexión, sesiones y dependencia de base de datos.
 - `requirements.txt`: dependencias de Python.
 
-Las rutas realizan directamente las consultas usando el modelo ORM; el proyecto no cuenta actualmente con capas separadas de servicios o repositorios. `Base.metadata.create_all()` crea tablas que no existan, pero no modifica tablas existentes; si la tabla ya estaba creada, agrega la columna `especie` mediante una migración o cambio en PostgreSQL.
+Las rutas realizan directamente las consultas usando el modelo ORM; el proyecto no cuenta actualmente con capas separadas de servicios o repositorios. `Base.metadata.create_all()` crea tablas que no existan, pero no modifica tablas existentes.
+
+### Migrar una base de datos existente
+
+Si la tabla `mascotas` ya existía antes de agregar `especie`, la API puede iniciar pero las consultas y escrituras fallarán con un error indicando que no existe esa columna. En la consola SQL de Neon, ejecuta el script [`migrations/001_add_especie.sql`](migrations/001_add_especie.sql). La migración agrega la columna si falta, rellena los registros antiguos con `No especificada`, la marca como obligatoria y crea su índice.
+
+Después de ejecutar la migración, vuelve a probar `GET /mascotas` y `POST /mascotas` en `/docs`. `GET /mascotas` sin parámetros devuelve todas las mascotas; `GET /mascotas?especie=Perro` filtra por especie.

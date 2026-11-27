@@ -51,6 +51,8 @@ La documentación interactiva estará en <http://127.0.0.1:8000/docs>.
 | `PUT` | `/mascotas/{mascota_id}` | Actualizar una mascota. |
 | `DELETE` | `/mascotas/{mascota_id}` | Eliminar una mascota. |
 
+El módulo independiente de usuarios ofrece `POST` y `GET /usuarios/`, y `GET`, `PUT` y `DELETE /usuarios/{usuario_id}`. Requiere nombre, correo válido y contraseña de al menos 8 caracteres; evita correos duplicados (`409`) y guarda la contraseña con hash PBKDF2. Los usuarios no tienen relación con mascotas.
+
 Para registrar o actualizar, envía un JSON como:
 
 ```json
@@ -68,12 +70,12 @@ Las validaciones exigen nombre, especie y raza de 1 a 50 caracteres, y edad y pe
 ## Organización del código
 
 - `main.py`: rutas HTTP y operaciones CRUD.
-- `models.py`: modelo de SQLAlchemy y tabla `mascotas`.
+- `models.py`: modelos SQLAlchemy de mascotas y usuarios.
 - `schemas.py`: validación de datos y formato de respuestas con Pydantic.
 - `database.py`: conexión, sesiones y dependencia de base de datos.
 - `requirements.txt`: dependencias de Python.
 
-Las rutas realizan directamente las consultas usando el modelo ORM; el proyecto no cuenta actualmente con capas separadas de servicios o repositorios. `Base.metadata.create_all()` crea tablas que no existan, pero no modifica tablas existentes.
+Las rutas realizan directamente las consultas usando los modelos ORM. `Base.metadata.create_all()` crea tablas que no existan, pero no modifica tablas existentes.
 
 ### Migrar una base de datos existente
 
